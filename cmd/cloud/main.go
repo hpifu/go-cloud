@@ -4,6 +4,7 @@ import (
     "flag"
     "fmt"
     "github.com/gin-gonic/gin"
+    "github.com/hpifu/go-cloud/internal/cloud"
     "github.com/hpifu/go-kit/logger"
     "github.com/spf13/viper"
     "os"
@@ -46,8 +47,14 @@ func main() {
     if err != nil {
         panic(err)
     }
-    _ = warnLog
-    _ = accessLog
+    cloud.InfoLog = infoLog
+    cloud.WarnLog = warnLog
+    cloud.AccessLog = accessLog
+
+
+    service := cloud.NewService()
+
+    _ = service
 
     // init gin
     gin.SetMode(gin.ReleaseMode)
