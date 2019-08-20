@@ -1,0 +1,19 @@
+{
+    "service": {
+        "port": ":6060"
+    },
+    "logger": {
+        "infoLog": {
+            "filename": "log/account.info",
+            "maxAge": "24h"
+        },
+        "warnLog": {
+            "filename": "log/account.warn",
+            "maxAge": "24h"
+        },
+        "accessLog": {
+            "filename": "log/account.access",
+            "maxAge": "24h"
+        }
+    }
+}
