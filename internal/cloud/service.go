@@ -19,10 +19,12 @@ func init() {
 }
 
 type Service struct {
+	Root string
 }
 
-func NewService() *Service {
+func NewService(root string) *Service {
 	return &Service{
+		Root: root,
 	}
 }
 

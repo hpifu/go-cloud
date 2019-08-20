@@ -1,6 +1,7 @@
 {
     "service": {
-        "port": ":6060"
+        "port": ":16061",
+        "root": "data"
     },
     "logger": {
         "infoLog": {

@@ -39,7 +39,6 @@ func (s *FileSystem) List(p string) ([]*FileInfo, error) {
 }
 
 func (s *FileSystem) Remove(p string, name string) error {
-
 	return os.RemoveAll(path.Join(s.Root, p, name))
 }
 
