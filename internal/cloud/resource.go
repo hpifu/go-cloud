@@ -2,11 +2,11 @@ package cloud
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/hpifu/go-kit/rule"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
-
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 type ResourceReqBody struct {
@@ -60,15 +60,16 @@ func (s *Service) Resource(c *gin.Context) {
 
 	status = http.StatusOK
 	// c.JSON(status, res)
-	c.File(filepath.Join(s.Root, "hatlonely12.png"))
+	c.File(filepath.Join(s.Root, req.Name))
 }
 
 func (s *Service) checkResourceReqBody(req *ResourceReqBody) error {
-	//if err := rule.Check(map[interface{}][]rule.Rule{
-	//	req.Token: {rule.Required},
-	//}); err != nil {
-	//	return err
-	//}
+	if err := rule.Check(map[interface{}][]rule.Rule{
+		req.Token: {rule.Required},
+		req.Name:  {rule.Required},
+	}); err != nil {
+		return err
+	}
 
 	return nil
 }
