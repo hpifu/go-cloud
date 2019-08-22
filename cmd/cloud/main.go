@@ -78,6 +78,7 @@ func main() {
 		ctx.String(200, "ok")
 	})
 	r.POST("/upload", service.Upload)
+	r.GET("/resource", service.Resource)
 
 	infoLog.Infof("%v init success, port [%v]", os.Args[0], config.GetString("service.port"))
 
