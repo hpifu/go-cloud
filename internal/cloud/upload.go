@@ -53,7 +53,7 @@ func (s *Service) Upload(ctx *gin.Context) {
 		return
 	}
 
-	a, err := s.GetAccount(req.Token)
+	a, err := s.getAccount(req.Token)
 	if err != nil {
 		err = fmt.Errorf("get account failed. err: [%v]", err)
 		WarnLog.WithField("@rid", rid).WithField("err", err).Warn()
@@ -90,7 +90,7 @@ func (s *Service) checkUploadReqBody(req *UploadReqBody) error {
 	return nil
 }
 
-func (s *Service) GetAccount(token string) (*account.Account, error) {
+func (s *Service) getAccount(token string) (*account.Account, error) {
 	hreq := &account.GetAccountReq{
 		Token: token,
 	}

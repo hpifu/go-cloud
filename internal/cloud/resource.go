@@ -15,17 +15,12 @@ type ResourceReqBody struct {
 	Name  string `json:"name,omitempty"`
 }
 
-type ResourceResBody struct {
-	OK bool `json:"ok"`
-}
-
 func (s *Service) Resource(c *gin.Context) {
 	rid := c.DefaultQuery("rid", NewToken())
 	req := &ResourceReqBody{
 		Token: c.DefaultQuery("token", ""),
 		Name:  c.DefaultQuery("name", ""),
 	}
-	var res *ResourceResBody
 	var err error
 	var buf []byte
 	status := http.StatusOK
@@ -36,7 +31,6 @@ func (s *Service) Resource(c *gin.Context) {
 			"body":   string(buf),
 			"url":    c.Request.URL.String(),
 			"req":    req,
-			"res":    res,
 			"rid":    rid,
 			"err":    err,
 			"status": status,
@@ -51,7 +45,7 @@ func (s *Service) Resource(c *gin.Context) {
 		return
 	}
 
-	a, err := s.GetAccount(req.Token)
+	a, err := s.getAccount(req.Token)
 	if err != nil {
 		err = fmt.Errorf("get account failed. err: [%v]", err)
 		WarnLog.WithField("@rid", rid).WithField("err", err).Warn()
