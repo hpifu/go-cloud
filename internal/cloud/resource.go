@@ -5,7 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hpifu/go-kit/rule"
 	"github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path/filepath"
 )
 
@@ -75,6 +77,30 @@ func (s *Service) checkResourceReqBody(req *ResourceReqBody) error {
 }
 
 func (s *Service) resource(req *ResourceReqBody) (*ResourceResBody, error) {
+	client := s.pool.Get()
+	hreq, err := http.NewRequest(
+		"GET",
+		"http://"+s.apiAccount+"/getaccount",
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+	q := &url.Values{}
+	q.Add("token", req.Token)
+	hreq.URL.RawQuery = q.Encode()
+
+	hres, err := client.Do(hreq)
+	if err != nil {
+		return nil, err
+	}
+	buf, err := ioutil.ReadAll(hres.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(string(buf))
+	defer hres.Body.Close()
+	s.pool.Put(client)
 
 	return nil, nil
 }

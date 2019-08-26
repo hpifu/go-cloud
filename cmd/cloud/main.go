@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hpifu/go-cloud/internal/cloud"
+	"github.com/hpifu/go-kit/cpool"
 	"github.com/hpifu/go-kit/logger"
 	"github.com/spf13/viper"
 	"os"
@@ -51,7 +52,17 @@ func main() {
 	cloud.WarnLog = warnLog
 	cloud.AccessLog = accessLog
 
-	service := cloud.NewService(config.GetString("service.root"))
+	pool := cpool.NewHttpPool(
+		config.GetInt("pool.maxConn"),
+		config.GetDuration("pool.connTimeout"),
+		config.GetDuration("pool.recvTimeout"),
+	)
+
+	service := cloud.NewService(
+		config.GetString("service.root"),
+		config.GetString("service.apiAccount"),
+		pool,
+	)
 
 	_ = service
 

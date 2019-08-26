@@ -3,6 +3,14 @@
         "port": ":16061",
         "root": "data"
     },
+    "api": {
+        "account": "127.0.0.1:16060"
+    },
+    "pool": {
+        "maxConn": 20,
+        "connTimeout": "200ms",
+        "recvtimeout": "200ms"
+    },
     "account": {
         "url": "http://127.0.0.1:6060"
     },
