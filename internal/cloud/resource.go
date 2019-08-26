@@ -5,10 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hpifu/go-kit/rule"
 	"github.com/sirupsen/logrus"
-	"io/ioutil"
 	"net/http"
-	"net/url"
 	"path/filepath"
+	"strconv"
 )
 
 type ResourceReqBody struct {
@@ -52,17 +51,23 @@ func (s *Service) Resource(c *gin.Context) {
 		return
 	}
 
-	res, err = s.resource(req)
+	a, err := s.GetAccount(req.Token)
 	if err != nil {
-		WarnLog.WithField("@rid", rid).WithField("err", err).Warn("resource failed")
+		err = fmt.Errorf("get account failed. err: [%v]", err)
+		WarnLog.WithField("@rid", rid).WithField("err", err).Warn()
 		status = http.StatusInternalServerError
 		c.String(status, err.Error())
 		return
 	}
 
+	if a == nil {
+		status = http.StatusBadRequest
+		c.String(status, "bad token")
+		return
+	}
+
 	status = http.StatusOK
-	// c.JSON(status, res)
-	c.File(filepath.Join(s.Root, req.Name))
+	c.File(filepath.Join(s.Root, strconv.Itoa(a.ID), req.Name))
 }
 
 func (s *Service) checkResourceReqBody(req *ResourceReqBody) error {
@@ -74,33 +79,4 @@ func (s *Service) checkResourceReqBody(req *ResourceReqBody) error {
 	}
 
 	return nil
-}
-
-func (s *Service) resource(req *ResourceReqBody) (*ResourceResBody, error) {
-	client := s.pool.Get()
-	hreq, err := http.NewRequest(
-		"GET",
-		"http://"+s.apiAccount+"/getaccount",
-		nil,
-	)
-	if err != nil {
-		return nil, err
-	}
-	q := &url.Values{}
-	q.Add("token", req.Token)
-	hreq.URL.RawQuery = q.Encode()
-
-	hres, err := client.Do(hreq)
-	if err != nil {
-		return nil, err
-	}
-	buf, err := ioutil.ReadAll(hres.Body)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(string(buf))
-	defer hres.Body.Close()
-	s.pool.Put(client)
-
-	return nil, nil
 }

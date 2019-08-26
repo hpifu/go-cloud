@@ -3,7 +3,7 @@ package cloud
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/hpifu/go-kit/cpool"
+	"github.com/hpifu/go-kit/hhttp"
 	"github.com/sirupsen/logrus"
 	"math/rand"
 	"time"
@@ -20,15 +20,16 @@ func init() {
 }
 
 type Service struct {
-	Root       string
-	pool       *cpool.HttpPool
+	Root string
+	//pool       *cpool.HttpPool
+	client     *hhttp.HttpClient
 	apiAccount string
 }
 
-func NewService(root string, apiAccount string, pool *cpool.HttpPool) *Service {
+func NewService(root string, apiAccount string, client *hhttp.HttpClient) *Service {
 	return &Service{
 		Root:       root,
-		pool:       pool,
+		client:     client,
 		apiAccount: apiAccount,
 	}
 }
