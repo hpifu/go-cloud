@@ -1,0 +1,21 @@
+version: "3.5"
+services:
+  go-cloud:
+    image: hatlonely/go-cloud:v1.0.0
+    hostname: go-cloud
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "6061:6061"
+    networks:
+      - go-cloudnet
+      - go-accountnet
+networks:
+  go-cloudnet:
+    external: true
+    name: go-cloudnet
+  go-accountnet:
+    external: true
+    name: go-accountnet

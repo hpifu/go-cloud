@@ -1,8 +1,9 @@
-repository=cloud
-user=hatlonely
+binary=cloud
+dockeruser=hatlonely
+gituser=hpifu
+repository=go-cloud
 version=$(shell git describe --tags)
 
-export GOPATH=$(shell pwd)/../../../../
 export PATH:=${PATH}:${GOPATH}/bin:$(shell pwd)/third/go/bin:$(shell pwd)/third/protobuf/bin:$(shell pwd)/third/cloc-1.76:$(shell pwd)/third/redis-3.2.8/src
 
 UNAME_S := $(shell uname -s)
@@ -16,7 +17,6 @@ endif
 all: third vendor output test stat
 
 deploy:
-	mkdir -p /var/docker/${repository}/log
 	docker stack deploy -c stack.yml ${repository}
 
 remove:
@@ -27,25 +27,39 @@ push:
 
 .PHONY: buildenv
 buildenv:
-	docker run --rm --name go-build-env -d golang:1.12.5 tail -f /dev/null
+	if [ -z "$(shell docker network ls --filter name=testnet -q)" ]; then \
+		docker network create -d bridge testnet; \
+	fi
+	if [ -z "$(shell docker ps --filter name=go-build-env -q)" ]; then \
+		docker run --name go-build-env --network testnet -d hatlonely/go-env:1.0.0 tail -f /dev/null; \
+	fi
+
+.PHONY: cleanbuildenv
+cleanbuildenv:
+	if [ ! -z "$(shell docker ps --filter name=go-build-env -q)" ]; then \
+		docker stop go-build-env  && docker rm go-build-env; \
+	fi
+	if [ ! -z "$(shell docker network ls --filter name=testnet -q)" ]; then \
+		docker network rm testnet; \
+	fi
 
 .PHONY: image
-image:
-	docker exec -it go-build-env rm -rf /data/src/hpifu/${repository}
-	docker exec -it go-build-env mkdir -p /data/src/hpifu/${repository}
-	docker cp . go-build-env:/data/src/hpifu/${repository}
-	docker exec -it go-build-env bash -c "cd /data/src/hpifu/${repository} && make output"
+image: buildenv
+	docker exec -i go-build-env rm -rf /data/src/${gituser}/${repository}
+	docker exec -i go-build-env mkdir -p /data/src/${gituser}/${repository}
+	docker cp . go-build-env:/data/src/${gituser}/${repository}
+	docker exec -i go-build-env bash -c "cd /data/src/${gituser}/${repository} && make output"
 	mkdir -p docker/
-	docker cp go-build-env:/data/src/hpifu/${repository}/output/${repository} docker/
-	docker build --tag=hatlonely/${repository}:`git describe --tags` .
-	${sedi} 's/image: ${user}\/${repository}:.*$$/image: ${user}\/${repository}:${version}/g' stack.yml
+	docker cp go-build-env:/data/src/${gituser}/${repository}/output/${binary} docker/
+	docker build --tag=hatlonely/${repository}:${version} .
+	${sedi} 's/image: ${dockeruser}\/${repository}:.*$$/image: ${dockeruser}\/${repository}:${version}/g' stack.yml
 
 output: cmd/*/*.go internal/*/*.go scripts/version.sh Makefile vendor
 	@echo "compile"
-	@go build -ldflags "-X 'main.AppVersion=`sh scripts/version.sh`'" cmd/${repository}/main.go && \
-	mkdir -p output/${repository}/bin && mv main output/${repository}/bin/${repository} && \
-	mkdir -p output/${repository}/configs && cp configs/${repository}/* output/${repository}/configs && \
-	mkdir -p output/${repository}/log
+	@go build -ldflags "-X 'main.AppVersion=`sh scripts/version.sh`'" cmd/${binary}/main.go && \
+	mkdir -p output/${binary}/bin && mv main output/${binary}/bin/${binary} && \
+	mkdir -p output/${binary}/configs && cp configs/${binary}/* output/${binary}/configs && \
+	mkdir -p output/${binary}/log
 
 vendor: go.mod go.sum
 	@echo "install golang dependency"

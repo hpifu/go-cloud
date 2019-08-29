@@ -1,6 +1,6 @@
-FROM golang:1.12.5
-COPY docker/account /var/docker/account
-RUN mkdir -p /var/docker/account/log
-EXPOSE 6060
-WORKDIR /var/docker/account
-CMD [ "bin/account", "-c", "configs/account.json" ]
+FROM centos:centos7
+COPY docker/cloud /var/docker/cloud
+RUN mkdir -p /var/docker/cloud/log
+EXPOSE 6061
+WORKDIR /var/docker/cloud
+CMD [ "bin/cloud", "-c", "configs/cloud.json" ]
