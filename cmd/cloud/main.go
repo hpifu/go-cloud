@@ -58,20 +58,25 @@ func main() {
 		config.GetDuration("pool.recvTimeout"),
 	)
 
+	secure := config.GetBool("service.secure")
+	domain := config.GetString("service.domain")
+
 	service := cloud.NewService(
 		config.GetString("service.root"),
 		config.GetString("api.account"),
 		client,
 	)
 
-	_ = service
-
 	// init gin
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:4000")
+		if secure {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", "https://"+domain)
+		} else {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", "http://"+domain)
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")

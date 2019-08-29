@@ -20,8 +20,7 @@ func init() {
 }
 
 type Service struct {
-	Root string
-	//pool       *cpool.HttpPool
+	Root       string
 	client     *hhttp.HttpClient
 	apiAccount string
 }
