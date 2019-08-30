@@ -24,8 +24,7 @@ config = {
         "domain": "127.0.0.1"
     },
     "api": {
-        "account": "test-go-cloud:6060",
-        # "account": "127.0.0.1:16060"
+        "account": "test-go-account:16060",
     },
     "mysqldb": {
         "host": "test-mysql",

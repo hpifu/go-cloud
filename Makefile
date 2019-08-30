@@ -37,7 +37,12 @@ buildenv:
 		docker run --name test-mysql --hostname test-mysql --network testnet -e MYSQL_ROOT_PASSWORD=keaiduo1 -d hatlonely/mysql:1.0.0; \
 	fi
 	if [ -z "$(shell docker ps --filter name=test-go-account -q)" ]; then \
-		docker run --name test-go-account --hostname test-go-account --network testnet -d hatlonely/go-account:v1.4.0-3-gf21585e; \
+		docker run --name test-go-account --hostname test-go-account --network testnet -d \
+			-e ACCOUNT_MYSQLDB_URI="hatlonely:keaiduo1@tcp(test-mysql:3306)/hads?charset=utf8&parseTime=True&loc=Local" \
+			-e ACCOUNT_REDISCACHE_ADDRESS="test-redis:6379" \
+			-e ACCOUNT_rediscache_address="test-redis:6379" \
+			-e ACCOUNT_SERVICE_PORT=":16060" \
+			hatlonely/go-account:v1.4.2; \
 	fi
 	if [ -z "$(shell docker ps --filter name=go-build-env -q)" ]; then \
 		docker run --name go-build-env --network testnet -d hatlonely/go-env:1.0.0 tail -f /dev/null; \
