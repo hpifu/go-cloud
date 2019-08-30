@@ -2,12 +2,13 @@ package cloud
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/hpifu/go-kit/rule"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/hpifu/go-kit/rule"
+	"github.com/sirupsen/logrus"
 )
 
 type ResourceReqBody struct {
