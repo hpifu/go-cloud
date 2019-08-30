@@ -9,6 +9,7 @@ import (
 	"github.com/hpifu/go-kit/logger"
 	"github.com/spf13/viper"
 	"os"
+	"strings"
 )
 
 // AppVersion name
@@ -25,6 +26,9 @@ func main() {
 
 	// load config
 	config := viper.New()
+	config.SetEnvPrefix("account")
+	config.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	config.AutomaticEnv()
 	config.SetConfigType("json")
 	fp, err := os.Open(*configfile)
 	if err != nil {
