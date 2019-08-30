@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   go-cloud:
-    image: hatlonely/go-cloud:v1.0.0
+    image: hatlonely/go-cloud:v1.0.1
     hostname: go-cloud
     deploy:
       replicas: 1
