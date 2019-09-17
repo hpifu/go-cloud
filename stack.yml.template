@@ -1,14 +1,17 @@
 version: "3.5"
 services:
   go-cloud:
-    image: hatlonely/go-cloud:v1.0.1
+    image: hatlonely/go-cloud:${version}
     hostname: go-cloud
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
-    ports:
-      - "6061:6061"
+    volumes:
+      - "/var/docker/cloud/log:/var/docker/cloud/log"
+      - "/var/docker/cloud/data:/var/docker/cloud/data"
+    # ports:
+    #   - "6061:6061"
     networks:
       - go-cloudnet
       - go-accountnet

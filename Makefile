@@ -6,17 +6,12 @@ version=$(shell git describe --tags)
 
 export PATH:=${PATH}:${GOPATH}/bin:$(shell pwd)/third/go/bin:$(shell pwd)/third/protobuf/bin:$(shell pwd)/third/cloc-1.76:$(shell pwd)/third/redis-3.2.8/src
 
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Darwin)
-	sedi=sed -i ""
-else
-	sedi=sed -i
-endif
-
 .PHONY: all
 all: third vendor output test stat
 
 deploy:
+	mkdir -p /var/docker/cloud/log
+	mkdir -p /var/docker/cloud/data
 	docker stack deploy -c stack.yml ${repository}
 
 remove:
@@ -82,7 +77,7 @@ image: buildenv
 	mkdir -p docker/
 	docker cp go-build-env:/data/src/${gituser}/${repository}/output/${binary} docker/
 	docker build --tag=hatlonely/${repository}:${version} .
-	${sedi} 's/image: ${dockeruser}\/${repository}:.*$$/image: ${dockeruser}\/${repository}:${version}/g' stack.yml
+	sed 's/image: ${dockeruser}\/${repository}:.*$$/image: ${dockeruser}\/${repository}:${version}/g' stack.yml.template > stack.yml
 
 output: cmd/*/*.go internal/*/*.go scripts/version.sh Makefile vendor
 	@echo "compile"
