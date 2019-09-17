@@ -77,7 +77,7 @@ image: buildenv
 	mkdir -p docker/
 	docker cp go-build-env:/data/src/${gituser}/${repository}/output/${binary} docker/
 	docker build --tag=hatlonely/${repository}:${version} .
-	sed 's/image: ${dockeruser}\/${repository}:.*$$/image: ${dockeruser}\/${repository}:${version}/g' stack.yml.template > stack.yml
+	sed 's/image: ${dockeruser}\/${repository}:.*$$/image: ${dockeruser}\/${repository}:${version}/g' stack.tpl.yml > stack.yml
 
 output: cmd/*/*.go internal/*/*.go scripts/version.sh Makefile vendor
 	@echo "compile"
