@@ -114,7 +114,7 @@ def before_all(context):
         )
     }
     account_url = "http://{}".format(config["api"]["account"])
-    res = requests.post("{}/signup".format(account_url), json={
+    res = requests.post("{}/account".format(account_url), json={
         "phone": config["account"]["phone"],
         "email": config["account"]["email"],
         "password": config["account"]["password"],
@@ -123,20 +123,15 @@ def before_all(context):
         "birthday": config["account"]["birthday"],
         "gender": config["account"]["gender"],
     })
-    print(res.text)
     res = requests.post("{}/signin".format(account_url), json={
-        "username": "13145678901",
-        "password": "12345678",
+        "username": config["account"]["phone"],
+        "password": config["account"]["password"],
     })
-    print(res.text)
+    # 这里直接使用 res.cookies 有跨域问题，获取不到 cookie
+    context.token = res.headers['Set-Cookie'].split(";")[0].split("=")[1]
+    res = requests.get("{}/account/{}".format(account_url, context.token))
     obj = json.loads(res.text)
-    context.token = obj["token"]
-    res = requests.get("{}/getaccount".format(account_url), params={
-        "token": context.token,
-    })
-    print(res.text)
-    obj = json.loads(res.text)
-    context.id = obj["account"]["id"]
+    context.id = obj["id"]
     print(context.token, context.id)
 
 
