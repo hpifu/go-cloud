@@ -20,8 +20,9 @@ config = {
     "prefix": "output/cloud",
     "service": {
         "port": 16061,
-        "secure": False,
-        "domain": "127.0.0.1"
+        "cookieSecure": False,
+        "allowOrigin": "http://127.0.0.1:4000",
+        "cookieDomain": "127.0.0.1"
     },
     "api": {
         "account": "test-go-account:16060",
@@ -68,8 +69,9 @@ def deploy():
     cf = json.loads(fp.read())
     fp.close()
     cf["service"]["port"] = ":{}".format(config["service"]["port"])
-    cf["service"]["secure"] = config["service"]["secure"]
-    cf["service"]["domain"] = config["service"]["domain"]
+    cf["service"]["cookieSecure"] = config["service"]["cookieSecure"]
+    cf["service"]["cookieDomain"] = config["service"]["cookieDomain"]
+    cf["service"]["allowOrigin"] = config["service"]["allowOrigin"]
     cf["api"]["account"] = config["api"]["account"]
     print(cf)
     fp = open("{}/configs/cloud.json".format(config["prefix"]), "w")

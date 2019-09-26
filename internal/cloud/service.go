@@ -23,13 +23,17 @@ type Service struct {
 	Root       string
 	client     *hhttp.HttpClient
 	apiAccount string
+	secure     bool
+	domain     string
 }
 
-func NewService(root string, apiAccount string, client *hhttp.HttpClient) *Service {
+func NewService(root string, apiAccount string, client *hhttp.HttpClient, secure bool, domain string) *Service {
 	return &Service{
 		Root:       root,
 		client:     client,
 		apiAccount: apiAccount,
+		secure:     secure,
+		domain:     domain,
 	}
 }
 
