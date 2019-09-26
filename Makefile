@@ -36,7 +36,7 @@ buildenv:
 			-e ACCOUNT_MYSQLDB_URI="hatlonely:keaiduo1@tcp(test-mysql:3306)/hads?charset=utf8&parseTime=True&loc=Local" \
 			-e ACCOUNT_REDISCACHE_ADDRESS="test-redis:6379" \
 			-e ACCOUNT_SERVICE_PORT=":16060" \
-			hatlonely/go-account:v2.0.0; \
+			hatlonely/go-account:v2.0.1; \
 	fi
 	if [ -z "$(shell docker ps --filter name=go-build-env -q)" ]; then \
 		docker run --name go-build-env --network testnet -d hatlonely/go-env:1.0.0 tail -f /dev/null; \
