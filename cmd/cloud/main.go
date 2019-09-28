@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hpifu/go-cloud/internal/cloud"
+	"github.com/hpifu/go-cloud/internal/service"
 	"github.com/hpifu/go-kit/hhttp"
 	"github.com/hpifu/go-kit/logger"
 	"github.com/spf13/viper"
@@ -53,9 +53,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	cloud.InfoLog = infoLog
-	cloud.WarnLog = warnLog
-	cloud.AccessLog = accessLog
+	service.InfoLog = infoLog
+	service.WarnLog = warnLog
+	service.AccessLog = accessLog
 
 	client := hhttp.NewHttpClient(
 		config.GetInt("pool.maxConn"),
@@ -67,7 +67,7 @@ func main() {
 	domain := config.GetString("service.cookieDomain")
 	origin := config.GetString("service.allowOrigin")
 
-	service := cloud.NewService(
+	svc := service.NewService(
 		config.GetString("service.root"),
 		config.GetString("api.account"),
 		client, secure, domain,
@@ -95,8 +95,8 @@ func main() {
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.String(200, "ok")
 	})
-	r.POST("/upload/:token", cloud.Decorator(service.Upload))
-	r.GET("/resource/:token", cloud.Decorator(service.Resource))
+	r.POST("/upload/:token", service.Decorator(svc.Upload))
+	r.GET("/resource/:token", service.Decorator(svc.Resource))
 
 	infoLog.Infof("%v init success, port [%v]", os.Args[0], config.GetString("service.port"))
 

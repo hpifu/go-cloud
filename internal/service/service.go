@@ -1,4 +1,4 @@
-package cloud
+package service
 
 import (
 	"encoding/hex"
