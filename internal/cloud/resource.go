@@ -11,12 +11,16 @@ import (
 )
 
 type ResourceReq struct {
-	Token string `json:"token,omitempty" form:"token"`
+	Token string `json:"token,omitempty" uri:"token"`
 	Name  string `json:"name,omitempty" form:"name"`
 }
 
 func (s *Service) Resource(c *gin.Context) (interface{}, interface{}, int, error) {
 	req := &ResourceReq{}
+
+	if err := c.BindUri(req); err != nil {
+		return nil, nil, http.StatusBadRequest, fmt.Errorf("bind uri failed. err: [%v]", err)
+	}
 
 	if err := c.Bind(req); err != nil {
 		return nil, nil, http.StatusBadRequest, fmt.Errorf("bind failed. err: [%v]", err)

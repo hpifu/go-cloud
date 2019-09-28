@@ -13,16 +13,12 @@ import (
 	"github.com/hpifu/go-kit/rule"
 )
 
-type UploadReqBody struct {
+type UploadReq struct {
 	Token string `json:"token,omitempty" uri:"token"`
 }
 
-type UploadResBody struct {
-	OK bool `json:"ok"`
-}
-
 func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) {
-	req := &UploadReqBody{}
+	req := &UploadReq{}
 
 	if err := c.BindUri(req); err != nil {
 		return nil, nil, http.StatusBadRequest, fmt.Errorf("bind uri failed. err: [%v]", err)
@@ -45,10 +41,10 @@ func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) 
 		return req, nil, http.StatusInternalServerError, fmt.Errorf("upload failed. err: [%v]", err)
 	}
 
-	return req, &UploadResBody{}, http.StatusOK, nil
+	return req, nil, http.StatusOK, nil
 }
 
-func (s *Service) validUpdate(req *UploadReqBody) error {
+func (s *Service) validUpdate(req *UploadReq) error {
 	if err := rule.Check(map[interface{}][]rule.Rule{
 		req.Token: {rule.Required},
 	}); err != nil {

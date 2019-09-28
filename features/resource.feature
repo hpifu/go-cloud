@@ -14,11 +14,10 @@ Feature: GET /resource
             }
             """
         Then http 检查 200
-        When http 请求 GET /resource
+        When http 请求 GET /resource/d571bda90c2d4e32a793b8a1ff4ff984
             """
             {
                 "params": {
-                    "token": "d571bda90c2d4e32a793b8a1ff4ff984",
                     "name": "hatlonely.png"
                 }
             }
