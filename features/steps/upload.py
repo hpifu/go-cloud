@@ -9,9 +9,7 @@ import os
 
 @when('请求 /upload, file: "{file:str}"')
 def step_impl(context, file):
-    res = requests.post("{}/upload".format(context.config["url"]), params={
-        "token": context.token,
-    }, files={
+    res = requests.post("{}/upload/{}".format(context.config["url"], context.token), files={
         'file': open('features/assets/hatlonely.png', 'rb')
     })
 

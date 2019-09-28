@@ -95,7 +95,8 @@ func main() {
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.String(200, "ok")
 	})
-	r.POST("/upload", service.Upload)
+	r.POST("/upload/:token", cloud.Decorator(service.Upload))
+	// r.POST("/upload", service.Upload1)
 	r.GET("/resource", cloud.Decorator(service.Resource))
 
 	infoLog.Infof("%v init success, port [%v]", os.Args[0], config.GetString("service.port"))

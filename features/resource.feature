@@ -1,9 +1,27 @@
-Feature: resource 测试
+Feature: GET /resource
 
-    Scenario Outline: resource
-        When 请求 /upload, file: "<file>"
-        When 请求 /resource, file: "<file>"
-        Then 检查状态码 res.status_code: <status>
-        Examples:
-            | file          | status |
-            | hatlonely.png | 200    |
+    Scenario: case
+        Given redis set object "d571bda90c2d4e32a793b8a1ff4ff984"
+            """
+            {
+                "id": 123
+            }
+            """
+        When http 请求 POST /upload/d571bda90c2d4e32a793b8a1ff4ff984
+            """
+            {
+                "file": "features/assets/hatlonely.png"
+            }
+            """
+        Then http 检查 200
+        When http 请求 GET /resource
+            """
+            {
+                "params": {
+                    "token": "d571bda90c2d4e32a793b8a1ff4ff984",
+                    "name": "hatlonely.png"
+                }
+            }
+            """
+        Then http 检查 200
+        Given redis del "d571bda90c2d4e32a793b8a1ff4ff984"

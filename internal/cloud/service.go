@@ -81,3 +81,24 @@ func NewToken() string {
 	hex.Encode(buf, token)
 	return string(buf)
 }
+
+type Account struct {
+	ID        int    `form:"id" json:"id,omitempty"`
+	Email     string `form:"email" json:"email,omitempty"`
+	Phone     string `form:"phone" json:"phone,omitempty"`
+	FirstName string `form:"firstName" json:"firstName,omitempty"`
+	LastName  string `form:"lastName" json:"lastName,omitempty"`
+	Birthday  string `form:"birthday" json:"birthday,omitempty"`
+	Password  string `form:"password" json:"password,omitempty"`
+	Gender    int    `form:"gender" json:"gender"`
+	Avatar    string `form:"avatar" json:"avatar"`
+}
+
+func (s *Service) getAccount(token string) (*Account, error) {
+	res := &Account{}
+	if err := s.client.GET("http://"+s.apiAccount+"/account/"+token, nil, nil).Interface(res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

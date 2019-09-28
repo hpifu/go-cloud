@@ -1,9 +1,18 @@
-Feature: upload 测试
+Feature: POST /upload/:token
 
-    Scenario Outline: upload
-        When 请求 /upload, file: "<file>"
-        Then 检查状态码 res.status_code: <status>
-        Then 检查 data 目录存在文件, file: "<file>"
-        Examples:
-            | file          | status |
-            | hatlonely.png | 200    |
+    Scenario: case
+        Given redis set object "d571bda90c2d4e32a793b8a1ff4ff984"
+            """
+            {
+                "id": 123
+            }
+            """
+        When http 请求 POST /upload/d571bda90c2d4e32a793b8a1ff4ff984
+            """
+            {
+                "file": "features/assets/hatlonely.png"
+            }
+            """
+        Then http 检查 200
+        Then fs 检查文件存在 "output/cloud/data/123/hatlonely.png"
+        Given redis del "d571bda90c2d4e32a793b8a1ff4ff984"

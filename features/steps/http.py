@@ -28,10 +28,19 @@ def step_impl(context, method, path):
             params=obj["params"], json=obj["json"]
         )
     if method == "POST":
-        context.res = requests.post(
-            "{}{}".format(context.config["url"], path),
-            params=obj["params"], json=obj["json"]
-        )
+        if "file" in obj:
+            context.res = requests.post(
+                "{}{}".format(context.config["url"], path),
+                params=obj["params"], json=obj["json"],
+                files={
+                    'file': open(obj["file"], 'rb')
+                }
+            )
+        else:
+            context.res = requests.post(
+                "{}{}".format(context.config["url"], path),
+                params=obj["params"], json=obj["json"]
+            )
 
 
 @then('http 检查 {status:int}')
