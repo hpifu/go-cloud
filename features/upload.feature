@@ -14,5 +14,5 @@ Feature: POST /upload/:token
             }
             """
         Then http 检查 200
-        Then fs 检查文件存在 "output/cloud/data/123/hatlonely.png"
+        Then fs 检查文件存在 "output/go-cloud/data/123/hatlonely.png"
         Given redis del "d571bda90c2d4e32a793b8a1ff4ff984"
