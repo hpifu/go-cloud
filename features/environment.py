@@ -37,15 +37,6 @@ config = {
     "redis": {
         "host": "test-redis",
         "port": 6379
-    },
-    "account": {
-        "phone": "13145678901",
-        "email": "hatlonely1@foxmail.com",
-        "password": "12345678",
-        "firstName": "爽",
-        "lastName": "郑",
-        "birthday": "1992-01-01",
-        "gender": 1
     }
 }
 
@@ -110,36 +101,3 @@ def before_all(context):
     context.redis_client = redis.Redis(
         config["redis"]["host"], port=6379, db=0
     )
-    context.cleanup = {
-        "sql": "DELETE FROM accounts WHERE phone='{}' OR email='{}'".format(
-            config["account"]["phone"], config["account"]["email"]
-        )
-    }
-    account_url = "http://{}".format(config["api"]["account"])
-    res = requests.post("{}/account".format(account_url), json={
-        "phone": config["account"]["phone"],
-        "email": config["account"]["email"],
-        "password": config["account"]["password"],
-        "firstName": config["account"]["firstName"],
-        "lastName": config["account"]["lastName"],
-        "birthday": config["account"]["birthday"],
-        "gender": config["account"]["gender"],
-    })
-    res = requests.post("{}/signin".format(account_url), json={
-        "username": config["account"]["phone"],
-        "password": config["account"]["password"],
-    })
-    # 这里直接使用 res.cookies 有跨域问题，获取不到 cookie
-    context.token = res.headers['Set-Cookie'].split(";")[0].split("=")[1]
-    res = requests.get("{}/account/{}".format(account_url, context.token))
-    obj = json.loads(res.text)
-    context.id = obj["id"]
-    print(context.token, context.id)
-
-
-def after_all(context):
-    if "sql" in context.cleanup:
-        with context.mysql_conn.cursor() as cursor:
-            cursor.execute(context.cleanup["sql"])
-        context.mysql_conn.commit()
-    stop()
