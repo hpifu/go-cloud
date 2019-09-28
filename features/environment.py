@@ -17,7 +17,7 @@ register_type(bool=lambda x: True if x == "true" else False)
 
 
 config = {
-    "prefix": "output/cloud",
+    "prefix": "output/go-cloud",
     "service": {
         "port": 16061,
         "cookieSecure": False,
