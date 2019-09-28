@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hpifu/go-cloud/internal/cloud"
 	"github.com/hpifu/go-kit/hhttp"
 	"github.com/hpifu/go-kit/logger"
 	"github.com/spf13/viper"
-	"os"
-	"strings"
 )
 
 // AppVersion name
@@ -95,7 +96,7 @@ func main() {
 		ctx.String(200, "ok")
 	})
 	r.POST("/upload", service.Upload)
-	r.GET("/resource", service.Resource)
+	r.GET("/resource", cloud.Decorator(service.Resource))
 
 	infoLog.Infof("%v init success, port [%v]", os.Args[0], config.GetString("service.port"))
 
