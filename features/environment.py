@@ -101,3 +101,7 @@ def before_all(context):
     context.redis_client = redis.Redis(
         config["redis"]["host"], port=6379, db=0
     )
+
+
+def after_all(context):
+    stop()
