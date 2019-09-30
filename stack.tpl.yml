@@ -8,8 +8,8 @@ services:
       restart_policy:
         condition: on-failure
     volumes:
-      - "/var/docker/cloud/log:/var/docker/cloud/log"
-      - "/var/docker/cloud/data:/var/docker/cloud/data"
+      - "/var/docker/${repository}/log:/var/docker/${repository}/log"
+      - "/var/docker/${repository}/data:/var/docker/${repository}/data"
     # ports:
     #   - "6061:6061"
     networks:
