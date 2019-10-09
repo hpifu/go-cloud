@@ -45,8 +45,8 @@ func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) 
 }
 
 func (s *Service) validUpdate(req *UploadReq) error {
-	if err := rule.Check(map[interface{}][]rule.Rule{
-		req.Token: {rule.Required},
+	if err := rule.Check([][3]interface{}{
+		{"token", req.Token, []rule.Rule{rule.Required}},
 	}); err != nil {
 		return err
 	}

@@ -43,9 +43,9 @@ func (s *Service) Resource(c *gin.Context) (interface{}, interface{}, int, error
 }
 
 func (s *Service) validResource(req *ResourceReq) error {
-	if err := rule.Check(map[interface{}][]rule.Rule{
-		req.Token: {rule.Required},
-		req.Name:  {rule.Required},
+	if err := rule.Check([][3]interface{}{
+		{"token", req.Token, []rule.Rule{rule.Required}},
+		{"name", req.Name, []rule.Rule{rule.Required}},
 	}); err != nil {
 		return err
 	}
