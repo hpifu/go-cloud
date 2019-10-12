@@ -7,7 +7,7 @@
         "cookieDomain": "account.hatlonely.com"
     },
     "api": {
-        "account": "api.account.hatlonely.com"
+        "account": "go-account:6060"
     },
     "pool": {
         "maxConn": 20,
