@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hpifu/go-kit/hhttp"
 	"github.com/hpifu/go-kit/rule"
 )
 
@@ -39,7 +40,7 @@ func (s *Service) Resource(c *gin.Context) (interface{}, interface{}, int, error
 		return req, "bad token", http.StatusBadRequest, nil
 	}
 
-	return req, &FileRes{Filename: filepath.Join(s.Root, strconv.Itoa(account.ID), req.Name)}, http.StatusOK, nil
+	return req, &hhttp.FileRes{Filename: filepath.Join(s.Root, strconv.Itoa(account.ID), req.Name)}, http.StatusOK, nil
 }
 
 func (s *Service) validResource(req *ResourceReq) error {

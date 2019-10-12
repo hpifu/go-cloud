@@ -9,10 +9,6 @@ var InfoLog *logrus.Logger = logrus.New()
 var WarnLog *logrus.Logger = logrus.New()
 var AccessLog *logrus.Logger = logrus.New()
 
-type FileRes struct {
-	Filename string
-}
-
 type Service struct {
 	Root       string
 	client     *hhttp.HttpClient
