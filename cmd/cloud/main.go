@@ -98,11 +98,12 @@ func main() {
 	})
 
 	// set handler
+	d := hhttp.NewGinHttpDecorator(infoLog, warnLog, accessLog)
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.String(200, "ok")
 	})
-	r.POST("/upload/:token", service.Decorator(svc.Upload))
-	r.GET("/resource/:token", service.Decorator(svc.Resource))
+	r.POST("/upload/:token", d.Decorate(svc.Upload))
+	r.GET("/resource/:token", d.Decorate(svc.Resource))
 
 	infoLog.Infof("%v init success, port [%v]", os.Args[0], config.GetString("service.port"))
 
