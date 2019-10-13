@@ -21,7 +21,7 @@ config = {
     "service": {
         "port": 16061,
         "cookieSecure": False,
-        "allowOrigin": "http://127.0.0.1:4000",
+        "allowOrigins": ["http://127.0.0.1:4000"],
         "cookieDomain": "127.0.0.1"
     },
     "api": {
@@ -62,7 +62,7 @@ def deploy():
     cf["service"]["port"] = ":{}".format(config["service"]["port"])
     cf["service"]["cookieSecure"] = config["service"]["cookieSecure"]
     cf["service"]["cookieDomain"] = config["service"]["cookieDomain"]
-    cf["service"]["allowOrigin"] = config["service"]["allowOrigin"]
+    cf["service"]["allowOrigins"] = config["service"]["allowOrigins"]
     cf["api"]["account"] = config["api"]["account"]
     print(cf)
     fp = open("{}/configs/cloud.json".format(config["prefix"]), "w")

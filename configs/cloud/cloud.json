@@ -2,7 +2,10 @@
     "service": {
         "port": ":6061",
         "root": "data",
-        "allowOrigin": "https://account.hatlonely.com",
+        "allowOrigins": [
+            "https://account.hatlonely.com",
+            "https://tech.hatlonely.com"
+        ],
         "cookieSecure": true,
         "cookieDomain": "account.hatlonely.com"
     },
