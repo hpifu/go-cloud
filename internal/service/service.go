@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/hpifu/go-kit/hhttp"
 	"github.com/sirupsen/logrus"
 )
@@ -40,10 +42,23 @@ type Account struct {
 }
 
 func (s *Service) getAccount(token string) (*Account, error) {
-	res := &Account{}
-	if err := s.client.GET("http://"+s.apiAccount+"/account/"+token, nil, nil).Interface(res); err != nil {
-		return nil, err
+	result := s.client.GET("http://"+s.apiAccount+"/account/"+token, nil, nil)
+	if result.Err != nil {
+		return nil, result.Err
 	}
 
-	return res, nil
+	if result.Status == 204 {
+		return nil, nil
+	}
+
+	if result.Status == 200 {
+		res := &Account{}
+		if err := result.Interface(res); err != nil {
+			return nil, err
+		}
+
+		return res, nil
+	}
+
+	return nil, fmt.Errorf("GET account failed. res[%v]", string(result.Res))
 }

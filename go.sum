@@ -89,8 +89,8 @@ github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
 github.com/hpifu/go-account v1.2.0 h1:7D7jPUvSRtFWtzXrx+/S/xG7h7eOvb+6AZh5bsBd5I8=
 github.com/hpifu/go-account v1.2.0/go.mod h1:qPUOaBOwRFh6KGt+Sv9xdBotatqKGDgXUCHNqzWW5KU=
-github.com/hpifu/go-kit v1.6.2 h1:NVaBrpJFlsubtKXuUwsGo0ed4sO24AGoGCvaV+z0lmw=
-github.com/hpifu/go-kit v1.6.2/go.mod h1:IQSv/sIhi4EAdbY+gDhWfP42s3suOGCd3mVwdO4htj8=
+github.com/hpifu/go-kit v1.6.3 h1:DF/jLC3EWxowXwX/bFKmF+kT9kQI7rmL3IO+ueCty/Y=
+github.com/hpifu/go-kit v1.6.3/go.mod h1:IQSv/sIhi4EAdbY+gDhWfP42s3suOGCd3mVwdO4htj8=
 github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 h1:IPJ3dvxmJ4uczJe5YQdrYB16oTJlGSC/OyZDqUk9xX4=
 github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869/go.mod h1:cJ6Cj7dQo+O6GJNiMx+Pa94qKj+TG8ONdKHgMNIyyag=
 github.com/jinzhu/gorm v1.9.8/go.mod h1:bdqTT3q6dhSph2K3pWxrHP6nqxuAp2yQ3KFtc3U3F84=

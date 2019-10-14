@@ -29,7 +29,7 @@ replace (
 require (
 	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-gonic/gin v1.4.0
-	github.com/hpifu/go-kit v1.6.2
+	github.com/hpifu/go-kit v1.6.3
 	github.com/lestrrat-go/file-rotatelogs v2.2.0+incompatible
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337
