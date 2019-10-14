@@ -14,11 +14,14 @@ import (
 )
 
 type UploadReq struct {
-	Token string `json:"token,omitempty" uri:"token"`
+	ID    int    `json:"id,omitempty" uri:"id"`
+	Token string `json:"token,omitempty"`
 }
 
 func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) {
-	req := &UploadReq{}
+	req := &UploadReq{
+		Token: c.GetHeader("Authorization"),
+	}
 
 	if err := c.BindUri(req); err != nil {
 		return nil, nil, http.StatusBadRequest, fmt.Errorf("bind uri failed. err: [%v]", err)

@@ -1,4 +1,4 @@
-Feature: POST /upload/:token
+Feature: POST /upload/:id
 
     Scenario: case
         Given redis set object "d571bda90c2d4e32a793b8a1ff4ff984"
@@ -7,9 +7,12 @@ Feature: POST /upload/:token
                 "id": 123
             }
             """
-        When http 请求 POST /upload/d571bda90c2d4e32a793b8a1ff4ff984
+        When http 请求 POST /upload/123
             """
             {
+                "header": {
+                    "Authorization": "d571bda90c2d4e32a793b8a1ff4ff984"
+                },
                 "file": "features/assets/hatlonely.png"
             }
             """

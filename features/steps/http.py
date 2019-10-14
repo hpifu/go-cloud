@@ -7,6 +7,17 @@ import requests
 import json
 
 
+def check(obj1, obj2):
+    if isinstance(obj2, dict):
+        for key in obj2:
+            check(obj1[key], obj2[key])
+    elif isinstance(obj2, list):
+        for idx, val in enumerate(obj2):
+            check(obj1[idx], val)
+    else:
+        assert_that(obj1, equal_to(obj2))
+
+
 @when('http 请求 {method:str} {path:str}')
 def step_impl(context, method, path):
     if context.text:
@@ -17,21 +28,23 @@ def step_impl(context, method, path):
         obj["params"] = {}
     if "json" not in obj:
         obj["json"] = {}
+    if "header" not in obj:
+        obj["header"] = {}
     if method == "GET":
         context.res = requests.get(
             "{}{}".format(context.config["url"], path),
-            params=obj["params"], json=obj["json"]
+            params=obj["params"], json=obj["json"], headers=obj["header"]
         )
     if method == "PUT":
         context.res = requests.put(
             "{}{}".format(context.config["url"], path),
-            params=obj["params"], json=obj["json"]
+            params=obj["params"], json=obj["json"], headers=obj["header"]
         )
     if method == "POST":
         if "file" in obj:
             context.res = requests.post(
                 "{}{}".format(context.config["url"], path),
-                params=obj["params"], json=obj["json"],
+                params=obj["params"], json=obj["json"], headers=obj["header"],
                 files={
                     'file': open(obj["file"], 'rb')
                 }
@@ -39,8 +52,13 @@ def step_impl(context, method, path):
         else:
             context.res = requests.post(
                 "{}{}".format(context.config["url"], path),
-                params=obj["params"], json=obj["json"]
+                params=obj["params"], json=obj["json"], headers=obj["header"]
             )
+    if method == "DELETE":
+        context.res = requests.delete(
+            "{}{}".format(context.config["url"], path),
+            params=obj["params"], json=obj["json"], headers=obj["header"]
+        )
 
 
 @then('http 检查 {status:int}')
@@ -51,12 +69,14 @@ def step_impl(context, status):
     else:
         obj = {}
     assert_that(res.status_code, equal_to(status))
+
     if "json" in obj:
         result = json.loads(res.text)
-        for key in obj["json"]:
-            assert_that(result[key], equal_to(obj["json"][key]))
+        check(result, obj["json"])
+
     if "text" in obj:
         assert_that(res.text, equal_to(obj["text"].strip()))
+
     if "cookies" in obj:
         for key in obj["cookies"]:
             cookies = res.cookies
