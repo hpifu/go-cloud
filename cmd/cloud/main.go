@@ -98,6 +98,8 @@ func main() {
 	})
 	r.POST("/upload/:id", d.Decorate(svc.Upload))
 	r.GET("/resource/:id", d.Decorate(svc.Resource))
+	r.POST("/avatar/:id", d.Decorate(svc.POSTAvatar))
+	r.GET("/avatar/:id", d.Decorate(svc.GetAvatar))
 
 	infoLog.Infof("%v init success, port [%v]", os.Args[0], config.GetString("service.port"))
 

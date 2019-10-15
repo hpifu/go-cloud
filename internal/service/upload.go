@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path"
 	"path/filepath"
 	"strconv"
 
@@ -16,6 +15,7 @@ import (
 type UploadReq struct {
 	ID    int    `json:"id,omitempty" uri:"id"`
 	Token string `json:"token,omitempty"`
+	Name  string `json:"name,omitempty" form:"name"`
 }
 
 func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) {
@@ -27,7 +27,11 @@ func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) 
 		return nil, nil, http.StatusBadRequest, fmt.Errorf("bind uri failed. err: [%v]", err)
 	}
 
-	if err := s.validUpdate(req); err != nil {
+	if err := c.BindQuery(req); err != nil {
+		return nil, nil, http.StatusBadRequest, fmt.Errorf("bind failed. err: [%v]", err)
+	}
+
+	if err := s.validUpload(req); err != nil {
 		return req, nil, http.StatusBadRequest, fmt.Errorf("valid request failed. err: [%v]", err)
 	}
 
@@ -37,17 +41,21 @@ func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) 
 	}
 
 	if account == nil {
-		return req, "bad token", http.StatusBadRequest, nil
+		return req, nil, http.StatusForbidden, fmt.Errorf("授权失败，请重新登陆")
 	}
 
-	if err := s.upload(c, account); err != nil {
+	if account.ID != req.ID {
+		return req, nil, http.StatusForbidden, fmt.Errorf("您没有该资源的权限")
+	}
+
+	if err := s.upload(c, account.ID, req.Name); err != nil {
 		return req, nil, http.StatusInternalServerError, fmt.Errorf("upload failed. err: [%v]", err)
 	}
 
 	return req, nil, http.StatusOK, nil
 }
 
-func (s *Service) validUpdate(req *UploadReq) error {
+func (s *Service) validUpload(req *UploadReq) error {
 	if err := rule.Check([][3]interface{}{
 		{"token", req.Token, []rule.Rule{rule.Required}},
 	}); err != nil {
@@ -57,7 +65,7 @@ func (s *Service) validUpdate(req *UploadReq) error {
 	return nil
 }
 
-func (s *Service) upload(ctx *gin.Context, a *Account) error {
+func (s *Service) upload(ctx *gin.Context, id int, name string) error {
 	fh, err := ctx.FormFile("file")
 	if err != nil {
 		return err
@@ -69,10 +77,15 @@ func (s *Service) upload(ctx *gin.Context, a *Account) error {
 	}
 	defer src.Close()
 
-	if err := os.MkdirAll(path.Join(s.Root, strconv.Itoa(a.ID)), 0755); err != nil {
+	if name == "" {
+		name = filepath.Base(fh.Filename)
+	}
+	path := filepath.Join(s.Root, strconv.Itoa(id), name)
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return err
 	}
-	out, err := os.Create(filepath.Join(s.Root, strconv.Itoa(a.ID), filepath.Base(fh.Filename)))
+
+	out, err := os.Create(path)
 	if err != nil {
 		return err
 	}
