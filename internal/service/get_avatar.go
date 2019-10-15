@@ -31,7 +31,6 @@ func (s *Service) GetAvatar(c *gin.Context) (interface{}, interface{}, int, erro
 		return req, nil, http.StatusBadRequest, fmt.Errorf("valid request failed. err: [%v]", err)
 	}
 
-	fmt.Println(req, "hello 123")
 	return req, &hhttp.FileRes{Filename: filepath.Join(s.Root, strconv.Itoa(req.ID), "_pub/account/avatar", req.Name)}, http.StatusOK, nil
 }
 
