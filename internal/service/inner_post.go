@@ -8,14 +8,22 @@ import (
 	"github.com/hpifu/go-kit/rule"
 )
 
-type POSTAvatarReq struct {
+func (s *Service) POSTTechImg(c *gin.Context) (interface{}, interface{}, int, error) {
+	return s.InnerPOST(c, "_pub/tech/img")
+}
+
+func (s *Service) POSTAccountAvatar(c *gin.Context) (interface{}, interface{}, int, error) {
+	return s.InnerPOST(c, "_pub/account/avatar")
+}
+
+type InnerPOSTReq struct {
 	ID    int    `json:"id,omitempty" uri:"id"`
 	Token string `json:"token,omitempty"`
 	Name  string `json:"name,omitempty" form:"name"`
 }
 
-func (s *Service) POSTAvatar(c *gin.Context) (interface{}, interface{}, int, error) {
-	req := &POSTAvatarReq{
+func (s *Service) InnerPOST(c *gin.Context, directory string) (interface{}, interface{}, int, error) {
+	req := &InnerPOSTReq{
 		Token: c.GetHeader("Authorization"),
 	}
 
@@ -27,7 +35,7 @@ func (s *Service) POSTAvatar(c *gin.Context) (interface{}, interface{}, int, err
 		return nil, nil, http.StatusBadRequest, fmt.Errorf("bind failed. err: [%v]", err)
 	}
 
-	if err := s.validPOSTAvatar(req); err != nil {
+	if err := s.validInnerPOST(req); err != nil {
 		return req, nil, http.StatusBadRequest, fmt.Errorf("valid request failed. err: [%v]", err)
 	}
 
@@ -44,14 +52,14 @@ func (s *Service) POSTAvatar(c *gin.Context) (interface{}, interface{}, int, err
 		return req, nil, http.StatusForbidden, fmt.Errorf("您没有该资源的权限")
 	}
 
-	if err := s.upload(c, account.ID, "_pub/account/avatar/"+req.Name); err != nil {
-		return req, nil, http.StatusInternalServerError, fmt.Errorf("postAvatar failed. err: [%v]", err)
+	if err := s.upload(c, account.ID, directory+"/"+req.Name); err != nil {
+		return req, nil, http.StatusInternalServerError, fmt.Errorf("InnerPOST failed. err: [%v]", err)
 	}
 
 	return req, nil, http.StatusOK, nil
 }
 
-func (s *Service) validPOSTAvatar(req *POSTAvatarReq) error {
+func (s *Service) validInnerPOST(req *InnerPOSTReq) error {
 	if err := rule.Check([][3]interface{}{
 		{"token", req.Token, []rule.Rule{rule.Required}},
 		{"name", req.Name, []rule.Rule{rule.Required}},

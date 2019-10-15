@@ -44,7 +44,7 @@ def step_impl(context, method, path):
         if "file" in obj:
             context.res = requests.post(
                 "{}{}".format(context.config["url"], path),
-                params=obj["params"], json=obj["json"], headers=obj["header"],
+                params=obj["params"], headers=obj["header"],
                 files={
                     'file': open(obj["file"], 'rb')
                 }
