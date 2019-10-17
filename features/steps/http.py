@@ -64,6 +64,7 @@ def step_impl(context, method, path):
 @then('http 检查 {status:int}')
 def step_impl(context, status):
     res = context.res
+    print(res.text)
     if context.text:
         obj = json.loads(context.text)
     else:

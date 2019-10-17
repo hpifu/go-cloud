@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/hpifu/go-account/pkg/account"
 	"github.com/hpifu/go-cloud/internal/service"
 	"github.com/hpifu/go-kit/hhttp"
 	"github.com/hpifu/go-kit/logger"
@@ -64,10 +65,11 @@ func main() {
 	service.WarnLog = warnLog
 	service.AccessLog = accessLog
 
-	client := hhttp.NewHttpClient(
-		config.GetInt("pool.maxConn"),
-		config.GetDuration("pool.connTimeout"),
-		config.GetDuration("pool.recvTimeout"),
+	client := account.NewClient(
+		config.GetString("account.address"),
+		config.GetInt("account.maxConn"),
+		config.GetDuration("account.connTimeout"),
+		config.GetDuration("account.recvTimeout"),
 	)
 
 	secure := config.GetBool("service.cookieSecure")

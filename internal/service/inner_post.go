@@ -8,12 +8,12 @@ import (
 	"github.com/hpifu/go-kit/rule"
 )
 
-func (s *Service) POSTTechImg(c *gin.Context) (interface{}, interface{}, int, error) {
-	return s.InnerPOST(c, "_pub/tech/img")
+func (s *Service) POSTTechImg(rid string, c *gin.Context) (interface{}, interface{}, int, error) {
+	return s.InnerPOST(rid, c, "_pub/tech/img")
 }
 
-func (s *Service) POSTAccountAvatar(c *gin.Context) (interface{}, interface{}, int, error) {
-	return s.InnerPOST(c, "_pub/account/avatar")
+func (s *Service) POSTAccountAvatar(rid string, c *gin.Context) (interface{}, interface{}, int, error) {
+	return s.InnerPOST(rid, c, "_pub/account/avatar")
 }
 
 type InnerPOSTReq struct {
@@ -22,7 +22,7 @@ type InnerPOSTReq struct {
 	Name  string `json:"name,omitempty" form:"name"`
 }
 
-func (s *Service) InnerPOST(c *gin.Context, directory string) (interface{}, interface{}, int, error) {
+func (s *Service) InnerPOST(rid string, c *gin.Context, directory string) (interface{}, interface{}, int, error) {
 	req := &InnerPOSTReq{
 		Token: c.GetHeader("Authorization"),
 	}
@@ -39,7 +39,7 @@ func (s *Service) InnerPOST(c *gin.Context, directory string) (interface{}, inte
 		return req, nil, http.StatusBadRequest, fmt.Errorf("valid request failed. err: [%v]", err)
 	}
 
-	account, err := s.getAccount(req.Token)
+	account, err := s.client.GETAccountToken(rid, req.Token)
 	if err != nil {
 		return req, nil, http.StatusInternalServerError, fmt.Errorf("get account failed. err: [%v]", err)
 	}

@@ -9,10 +9,8 @@
         "cookieSecure": true,
         "cookieDomain": "account.hatlonely.com"
     },
-    "api": {
-        "account": "go-account:6060"
-    },
-    "pool": {
+    "account": {
+        "address": "go-account:6060",
         "maxConn": 20,
         "connTimeout": "200ms",
         "recvtimeout": "200ms"

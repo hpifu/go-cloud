@@ -18,7 +18,7 @@ type UploadReq struct {
 	Name  string `json:"name,omitempty" form:"name"`
 }
 
-func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) {
+func (s *Service) Upload(rid string, c *gin.Context) (interface{}, interface{}, int, error) {
 	req := &UploadReq{
 		Token: c.GetHeader("Authorization"),
 	}
@@ -35,7 +35,7 @@ func (s *Service) Upload(c *gin.Context) (interface{}, interface{}, int, error) 
 		return req, nil, http.StatusBadRequest, fmt.Errorf("valid request failed. err: [%v]", err)
 	}
 
-	account, err := s.getAccount(req.Token)
+	account, err := s.client.GETAccountToken(rid, req.Token)
 	if err != nil {
 		return req, nil, http.StatusInternalServerError, fmt.Errorf("get account failed. err: [%v]", err)
 	}

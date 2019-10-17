@@ -11,11 +11,11 @@ import (
 	"github.com/hpifu/go-kit/rule"
 )
 
-func (s *Service) GETTechImg(c *gin.Context) (interface{}, interface{}, int, error) {
+func (s *Service) GETTechImg(rid string, c *gin.Context) (interface{}, interface{}, int, error) {
 	return s.InnerGET(c, "_pub/tech/img")
 }
 
-func (s *Service) GETAccountAvatar(c *gin.Context) (interface{}, interface{}, int, error) {
+func (s *Service) GETAccountAvatar(rid string, c *gin.Context) (interface{}, interface{}, int, error) {
 	return s.InnerGET(c, "_pub/account/avatar")
 }
 

@@ -24,8 +24,11 @@ config = {
         "allowOrigins": ["http://127.0.0.1:4000"],
         "cookieDomain": "127.0.0.1"
     },
-    "api": {
-        "account": "test-go-account:16060",
+    "account": {
+        "address": "test-go-account:16060",
+        "maxConn": 20,
+        "connTimeout": "200ms",
+        "recvtimeout": "200ms"
     },
     "mysqldb": {
         "host": "test-mysql",
@@ -63,7 +66,7 @@ def deploy():
     cf["service"]["cookieSecure"] = config["service"]["cookieSecure"]
     cf["service"]["cookieDomain"] = config["service"]["cookieDomain"]
     cf["service"]["allowOrigins"] = config["service"]["allowOrigins"]
-    cf["api"]["account"] = config["api"]["account"]
+    cf["account"]["address"] = config["account"]["address"]
     print(cf)
     fp = open("{}/configs/cloud.json".format(config["prefix"]), "w")
     fp.write(json.dumps(cf, indent=4))
