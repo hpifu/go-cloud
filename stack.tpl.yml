@@ -15,9 +15,13 @@ services:
     networks:
       - ${repository}net
       - go-accountnet
+      - elasticsearchnet
 networks:
   ${repository}net:
     name: ${repository}net
   go-accountnet:
     external: true
     name: go-accountnet
+  elasticsearchnet:
+    external: true
+    name: elasticsearchnet
