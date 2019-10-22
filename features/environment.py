@@ -24,6 +24,9 @@ config = {
         "allowOrigins": ["http://127.0.0.1:4000"],
         "cookieDomain": "127.0.0.1"
     },
+    "es": {
+        "uri": "http://test-elasticsearch:9200"
+    },
     "account": {
         "address": "test-go-account:16060",
         "maxConn": 20,
@@ -67,6 +70,7 @@ def deploy():
     cf["service"]["cookieDomain"] = config["service"]["cookieDomain"]
     cf["service"]["allowOrigins"] = config["service"]["allowOrigins"]
     cf["account"]["address"] = config["account"]["address"]
+    cf["es"]["uri"] = config["es"]["uri"]
     print(cf)
     fp = open("{}/configs/cloud.json".format(config["prefix"]), "w")
     fp.write(json.dumps(cf, indent=4))

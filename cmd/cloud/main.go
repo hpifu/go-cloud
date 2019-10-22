@@ -18,7 +18,10 @@ import (
 	"github.com/hpifu/go-kit/hhttp"
 	"github.com/hpifu/go-kit/logger"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	"github.com/olivere/elastic/v7"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"gopkg.in/sohlich/elogrus.v7"
 )
 
 // AppVersion name
@@ -49,21 +52,23 @@ func main() {
 	}
 
 	// init logger
-	infoLog, err := logger.NewTextLoggerWithViper(config.Sub("logger.infoLog"))
+	// init logger
+	infoLog, warnLog, accessLog, err := logger.NewLoggerGroupWithViper(config.Sub("logger"))
 	if err != nil {
 		panic(err)
 	}
-	warnLog, err := logger.NewTextLoggerWithViper(config.Sub("logger.warnLog"))
+	esclient, err := elastic.NewClient(
+		elastic.SetURL(config.GetString("es.uri")),
+		elastic.SetSniff(false),
+	)
 	if err != nil {
 		panic(err)
 	}
-	accessLog, err := logger.NewJsonLoggerWithViper(config.Sub("logger.accessLog"))
+	hook, err := elogrus.NewAsyncElasticHook(esclient, "go-cloud", logrus.InfoLevel, "go-cloud-log")
 	if err != nil {
 		panic(err)
 	}
-	service.InfoLog = infoLog
-	service.WarnLog = warnLog
-	service.AccessLog = accessLog
+	accessLog.Hooks.Add(hook)
 
 	client := account.NewClient(
 		config.GetString("account.address"),
@@ -81,6 +86,7 @@ func main() {
 		config.GetString("api.account"),
 		client, secure, domain,
 	)
+	svc.SetLogger(infoLog, warnLog, accessLog)
 
 	// init gin
 	gin.SetMode(gin.ReleaseMode)

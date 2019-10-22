@@ -15,6 +15,9 @@
         "connTimeout": "200ms",
         "recvtimeout": "200ms"
     },
+    "es": {
+        "uri": "http://elasticsearch:9200"
+    },
     "logger": {
         "infoLog": {
             "filename": "log/cloud.info",
