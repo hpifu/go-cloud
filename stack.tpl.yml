@@ -13,15 +13,8 @@ services:
     # ports:
     #   - "6061:6061"
     networks:
-      - ${repository}net
-      - go-accountnet
-      - elasticsearchnet
+      - online
 networks:
-  ${repository}net:
-    name: ${repository}net
-  go-accountnet:
+  online:
     external: true
-    name: go-accountnet
-  elasticsearchnet:
-    external: true
-    name: elasticsearchnet
+    name: online
